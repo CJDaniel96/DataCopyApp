@@ -116,11 +116,15 @@ namespace WindowsFormsApp2
                     DataCopyApp(dirfor, dirto);
                 }
             }
+
+            DataCopyApp(dirfor, dirto);
         }
 
-        public void DataCopyApp(DirectoryInfo dirfordata, DirectoryInfo dirtodata)
+        //資料自動轉存
+        private void DataCopyApp(DirectoryInfo dirfordata, DirectoryInfo dirtodata)
         {
-            FileInfo[] filefordata = dirfordata.GetFiles();
+            DirectoryInfo FileExtension = dirfordata.Extension(".jpg" ||".png");
+            FileInfo[] filefordata = FileExtension.GetFiles();
             DateTime[] filefortime = new DateTime[filefordata.Length];
 
             for(int i = 0; i < filefordata.Length; i++)
@@ -128,6 +132,12 @@ namespace WindowsFormsApp2
                 filefortime[i] = filefordata[i].CreationTime.Date;
             }
 
+            filefortime = DateTimeBySort;
+        }
+
+        //資料依時間由近到遠排序
+        private DateTime DateTimeBySort(DateTime[] filefortime)
+        {
             DateTime temp;
 
             for(int i = 0; i < filefortime.Length; i++)
@@ -143,13 +153,24 @@ namespace WindowsFormsApp2
                 }
             }
 
-
+            return filefortime;
         }
 
-        public DirectoryInfo Createdir(DirectoryInfo dirtodata, DateTime filetime)
+        //創建新資料夾
+        private DirectoryInfo Createdir(DirectoryInfo dirtodata, DateTime filetime)
         {
             DirectoryInfo newdir = new DirectoryInfo(dirtodata + "\\" + filetime);
-            return newdir;
+            
+            try
+            {
+                newdir.Exists == true;
+            }
+            catch(Exception)
+            {
+                return newdir;
+            }
+
+            
         }
     }
 }
