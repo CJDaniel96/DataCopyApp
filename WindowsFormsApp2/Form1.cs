@@ -121,11 +121,35 @@ namespace WindowsFormsApp2
         public void DataCopyApp(DirectoryInfo dirfordata, DirectoryInfo dirtodata)
         {
             FileInfo[] filefordata = dirfordata.GetFiles();
-            foreach (FileInfo r in filefordata)
+            DateTime[] filefortime = new DateTime[filefordata.Length];
+
+            for(int i = 0; i < filefordata.Length; i++)
             {
-                
+                filefortime[i] = filefordata[i].CreationTime.Date;
             }
 
+            DateTime temp;
+
+            for(int i = 0; i < filefortime.Length; i++)
+            {
+                for(int j = 0; j < filefortime.Length; j++)
+                {
+                    if(DateTime.Compare(filefortime[i], filefortime[j]) < 0)
+                    {
+                        temp = filefortime[i];
+                        filefortime[i] = filefortime[j];
+                        filefortime[j] = temp;
+                    }
+                }
+            }
+
+
+        }
+
+        public DirectoryInfo Createdir(DirectoryInfo dirtodata, DateTime filetime)
+        {
+            DirectoryInfo newdir = new DirectoryInfo(dirtodata + "\\" + filetime);
+            return newdir;
         }
     }
 }
