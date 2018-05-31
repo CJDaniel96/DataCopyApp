@@ -90,34 +90,42 @@ namespace WindowsFormsApp2
 
         private void Submit_Click(object sender, EventArgs e)
         {
-            DirectoryInfo dirfor = new DirectoryInfo(Filefotext.Text);
+            DirectoryInfo dirfor;
+            DirectoryInfo dirto;
 
             try
             {
                 dirfor = new DirectoryInfo(Filefotext.Text);
-            }
-            catch (IOException)
-            {
-                MessageBox.Show("請確實填寫路徑!!!");
             }
             catch (ArgumentException)
             {
                 MessageBox.Show("請確實填寫路徑!!!");
             }
 
-            DirectoryInfo dirto = new DirectoryInfo(Filetotext.Text);
-
-            if (!dirto.Exists)
+            try
             {
-                dirto = new DirectoryInfo("C:\\Users\\Daniel\\Desktop");
+                dirto = new DirectoryInfo(Filetotext.Text);
             }
+            catch (ArgumentException)
+            {
+                MessageBox.Show("目的路徑不存在!!!");
+                if (MessageBox.Show("請問是否在桌面創建資料夾?", "資料自動轉存", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
+                {
+                    dirfor = new DirectoryInfo(Filefotext.Text);
+                    dirto = new DirectoryInfo("C:\\Users\\Daniel\\Desktop");
+                    DataCopyApp(dirfor, dirto);
+                }
+            }
+        }
 
-            DirectoryInfo[] subdirfor = dirfor.GetDirectories();
-            foreach(DirectoryInfo ls in subdirfor)
+        public void DataCopyApp(DirectoryInfo dirfordata, DirectoryInfo dirtodata)
+        {
+            FileInfo[] filefordata = dirfordata.GetFiles();
+            foreach (FileInfo r in filefordata)
             {
                 
             }
-            
+
         }
     }
 }
