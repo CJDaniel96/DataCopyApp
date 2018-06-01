@@ -100,6 +100,13 @@ namespace WindowsFormsApp2
             catch (ArgumentException)
             {
                 MessageBox.Show("請確實填寫路徑!!!");
+                return;
+            }
+
+            if (!dirfor.Exists)
+            {
+                MessageBox.Show("請確實填寫路徑!!!");
+                return;
             }
 
             try
@@ -114,29 +121,52 @@ namespace WindowsFormsApp2
                     dirfor = new DirectoryInfo(Filefotext.Text);
                     dirto = new DirectoryInfo("C:\\Users\\Daniel\\Desktop");
                     DataCopyApp(dirfor, dirto);
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show("請確實填寫路徑!!!");
+                    return;
                 }
             }
 
-            DataCopyApp(dirfor, dirto);
+            if(Filefotext.Text != null && Filetotext.Text != null)
+            {
+                dirfor = new DirectoryInfo(Filefotext.Text);
+                dirto = new DirectoryInfo(Filetotext.Text);
+                DataCopyApp(dirfor, dirto);
+            }
         }
 
         //資料自動轉存
         private void DataCopyApp(DirectoryInfo dirfordata, DirectoryInfo dirtodata)
         {
-            DirectoryInfo FileExtension = dirfordata.Extension(".jpg" ||".png");
-            FileInfo[] filefordata = FileExtension.GetFiles();
+            FileInfo[] filefordata = dirfordata.GetFiles();
             DateTime[] filefortime = new DateTime[filefordata.Length];
-
+            //將資料時間存入陣列
             for(int i = 0; i < filefordata.Length; i++)
             {
                 filefortime[i] = filefordata[i].CreationTime.Date;
             }
+            //將資料依時間排序
+            filefortime = DateTimeBySort(filefortime);
+            DirectoryInfo[] dirtime = new DirectoryInfo[filefortime.Length];
 
-            filefortime = DateTimeBySort;
+            for (int i = 0; i < filefortime.Length; i++)
+            {
+                dirtime[i] = Createdir(dirfordata, filefortime[i]);
+                for(int j = 0; j < filefordata.Length; j++)
+                {
+                    if(filefordata[j].CreationTime == filefortime[i])
+                    {
+                        filefordata[j].CopyTo(dirtime[i] + "\\" + filefordata[j]);
+                    }
+                }
+            }
         }
 
         //資料依時間由近到遠排序
-        private DateTime DateTimeBySort(DateTime[] filefortime)
+        private DateTime[] DateTimeBySort(DateTime[] filefortime)
         {
             DateTime temp;
 
@@ -159,18 +189,12 @@ namespace WindowsFormsApp2
         //創建新資料夾
         private DirectoryInfo Createdir(DirectoryInfo dirtodata, DateTime filetime)
         {
-            DirectoryInfo newdir = new DirectoryInfo(dirtodata + "\\" + filetime);
+            string filetimepath = "\\" + filetime.ToShortDateString();
+            string dirtopath = dirtodata.ToString();
+            string dirpath = dirtopath + filetimepath;
+            DirectoryInfo newdir = new DirectoryInfo(dirpath);
             
-            try
-            {
-                newdir.Exists == true;
-            }
-            catch(Exception)
-            {
-                return newdir;
-            }
-
-            
+            return newdir;
         }
     }
 }
