@@ -93,6 +93,9 @@ namespace WindowsFormsApp2
             DirectoryInfo dirfor;
             DirectoryInfo dirto;
 
+            Filefotext.Text = "c:\\Users\\Daniel\\Downloads\\abc";
+            Filetotext.Text = "d:\\";
+
             try
             {
                 dirfor = new DirectoryInfo(Filefotext.Text);
@@ -154,13 +157,11 @@ namespace WindowsFormsApp2
 
             for (int i = 0; i < filefortime.Length; i++)
             {
-                dirtime[i] = Createdir(dirfordata, filefortime[i]);
+                dirtime[i] = Createdir(dirtodata, filefortime[i]);
                 for(int j = 0; j < filefordata.Length; j++)
                 {
-                    if(filefordata[j].CreationTime == filefortime[i])
-                    {
-                        filefordata[j].CopyTo(dirtime[i] + "\\" + filefordata[j]);
-                    }
+
+                        filefordata[j].CopyTo(dirtime[i].FullName + "\\" + filefordata[j]);
                 }
             }
         }
@@ -189,10 +190,10 @@ namespace WindowsFormsApp2
         //創建新資料夾
         private DirectoryInfo Createdir(DirectoryInfo dirtodata, DateTime filetime)
         {
-            string filetimepath = "\\" + filetime.ToShortDateString();
+            string filetimepath = "\\" + filetime.ToString("yyyyMMdd");
             string dirtopath = dirtodata.ToString();
             string dirpath = dirtopath + filetimepath;
-            DirectoryInfo newdir = new DirectoryInfo(dirpath);
+            DirectoryInfo newdir = Directory.CreateDirectory(dirpath);
             
             return newdir;
         }
